@@ -143,18 +143,20 @@ class Manager(object):
 
         If your sub-Manager does not override this, any values for options will get lost.
         """
-        if app is None:
-            app = self.app
+        if self.app is None:
             if app is None:
                 raise Exception("There is no app here. This is unlikely to work.")
+            self.app = app
+        elif app is not None:
+            kwargs['app'] = app
 
-        if isinstance(app, Flask):
+        if isinstance(self.app, Flask):
             if kwargs:
                 import warnings
                 warnings.warn("Options will be ignored.")
-            return app
+            return self.app
 
-        app = app(**kwargs)
+        app = self.app(**kwargs)
         self.app = app
         return app
 
